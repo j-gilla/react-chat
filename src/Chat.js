@@ -1,6 +1,7 @@
 import React from 'react';
+import io from 'socket.io-client'
 
-class extends React.Component{
+class Chat extends React.Component{
     constructor(props){
         super(props);
         
@@ -9,6 +10,16 @@ class extends React.Component{
             message: '',
             messages: []
         };
+        this.socket = io('localhost:8080');
+
+        this.sendMessage = ev =>{
+            ev.preventDefault();
+            this.socket.emit('SEND_MESSAGE', {
+                author: this.state.username,
+                message: this.state.message
+            });
+            this.setState({message: ''});
+        }
     }
     render(){
         return (
@@ -32,7 +43,7 @@ class extends React.Component{
                             <br />
                             <input type="text" placeholder="Message" vlaue={this.state.username} onChange={ev => this.setState({message: ev.target.value})} className="form-control"/>
                             <br />
-                            <button className="btn btn-primary from-control">Send</button>
+                            <button onClicK={this.sendMessage} className="btn btn-primary from-control">Send</button>
                             </div>
                         </div>
                     </div>
